@@ -2,12 +2,21 @@
 node {
   stage('checkout sources') {
         // You should change this to be the appropriate thing
-        git url: 'https://github.com/ColumbusStateWorkforceInnovation/special-topics-ci-lab'
+        git url: 'https://github.com/leighbaxter3/special-topics-ci-lab'
   }
 
   stage('Build') {
-    // you should build this repo with a maven build step here
-    echo "hello"
+      // you should build this repo with a maven build step here
+      withMaven (maven: 'maven3') {
+      sh "mvn package"
+      }
+      echo "hello"
+    }
+    try {
+            stage('Test') {
+                sh 'mvn test'
+            }
+        } finally {
+            junit 'build/reports/**/*.xml'
+        }
   }
-  // you should add a test report here
-}
